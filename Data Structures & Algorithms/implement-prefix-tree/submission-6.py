@@ -1,0 +1,46 @@
+class Node:
+    def __init__(self, char: str, children: dict, is_word: bool):
+        self.char = char
+        self.children = dict()
+        self.is_word = is_word
+
+class PrefixTree:
+
+    def __init__(self):
+        self.root = Node(None, dict(), False)
+
+    def insert(self, word: str) -> None:
+        cur = self.root
+        for i in range(len(word)):
+            char = word[i]
+            if char not in cur.children:
+                cur.children[char] = Node(char, dict(), False)
+            char_n = cur.children[char]
+            if i == len(word) - 1:
+                char_n.is_word = True
+            cur = char_n
+
+    def search(self, word: str) -> bool:
+        cur = self.root
+        for i in range(len(word)):
+            char = word[i]
+            if char not in cur.children:
+                return False
+            cur = cur.children[char]
+            if i == len(word) - 1:
+                return cur.is_word
+        return False
+
+    def startsWith(self, prefix: str) -> bool:
+        def dfs(cur, i):
+            if i >= len(prefix):
+                # base case, prefix exists
+                return True
+            char = prefix[i]
+            node = cur.children.get(char)
+            if not node:
+                # prefix does not exist in trie
+                return False
+            return dfs(node, i + 1)
+        
+        return dfs(self.root, 0)
