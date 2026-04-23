@@ -1,0 +1,53 @@
+# Use a set to store the index of where we saw "1"
+# We can use tuple (row, col) as the key of set
+# Then mark visited nodes from "1" to "0" to not visit them again
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+
+        visited = set()
+        def bfs(row, col):
+            queue = deque()
+            queue.append((row, col))
+            
+            while queue:
+                cell = queue.popleft()
+
+                # mark as visited
+                row, col = cell
+                grid[row][col] = "0"
+                visited.add(cell)
+
+                # add right cell to the queue
+                r_col = col + 1
+                if r_col < len(grid[0]) and grid[row][r_col] == "1":
+                    if (row, r_col) not in visited:
+                        queue.append((row, r_col))
+
+                # add left cell to the queue
+                l_col = col - 1
+                if l_col >= 0 and grid[row][l_col] == "1":
+                    if (row, l_col) not in visited:
+                        queue.append((row, l_col))
+
+                # add down cell to the queue
+                d_row = row + 1
+                if d_row < len(grid) and grid[d_row][col] == "1":
+                     if (d_row, col) not in visited:
+                        queue.append((d_row, col))
+
+                # add up cell to the queue
+                u_row = row - 1
+                if u_row >= 0 and grid[u_row][col] == "1":
+                    if (u_row, col) not in visited:
+                        queue.append((u_row, col))
+
+
+        islands = 0
+        for row in range(len(grid)):
+            for col in range(len(grid[0])):
+                if grid[row][col] == "1":
+                    # count this island
+                    islands += 1
+                    bfs(row, col)
+        
+        return islands
